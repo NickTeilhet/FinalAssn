@@ -1,0 +1,138 @@
+<!doctype html>
+
+<html>
+
+<h1>Find A Venue</h1>
+
+<p>Search for a venue, find an artist that is headlining that venue, then see information related to that show, like location, ticket price, and showtime.</p>
+
+<body>
+
+<div class="topnav">
+  <input id='searchText' type="text" placeholder="Search..">
+  <input type="button" onclick='findVenue()' value="search"/>
+  </br>
+</div>
+
+<p></p>
+
+<table style="100%">
+  <tr>
+    <th>Venue</th>
+    <th>Artist</th>
+    <th>Details</th>
+  </tr>
+  <tr>
+    <td><a id='Verizon' onclick="populateArtist('Verizon')">Verizon</a></td>
+    <td><div id = "artist1"></div></td>
+    <td><div id="artistInfo"></div></td>
+  </tr>
+  <tr>
+    <td><a id='Rebel Lounge' onclick="populateArtist('Rebel Lounge')">Rebel Lounge</a></td>
+    <td><div id = "artist2"></div></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><a id='House of Blues' onclick="populateArtist('House of Blues')">House of Blues</a></td>
+    <td><div id = "artist3"></div></td>
+    <td></td>
+  </tr>
+</table>
+
+<script language="javascript">
+
+  function findVenue()
+  {
+    var children = document.getElementsByTagName('a');
+    //document.write(children.length + '</br>')
+    //document.write(document.getElementById('searchText').text + '+</br>')
+    for (var i = 0; i < children.length; i++)
+    {
+      //document.write(children[i].text + '--</br>')
+      if(children[i].id != document.getElementById('searchText'))
+      {
+        child.style.display = 'none'
+      }
+    }
+  }
+
+  function getArtistInfoFromWeb(artistName)
+  {
+    var xhr = new XMLHttpRequest();
+    var url = 'https://rest.bandsintown.com/artists/' + artistName + '/events?app_id=NT'
+    //document.write(url)
+    xhr.open('GET', url);  //&date=2017-12-30
+    xhr.send(null);
+    xhr.onreadystatechange = function ()
+    {
+      var DONE = 4;
+      var OK = 200;
+      if (xhr.readyState === DONE)
+      {
+        if (xhr.status === OK)
+        {
+          var data = JSON.parse(xhr.responseText);
+          if (data.length > 0)
+          {
+            document.getElementById("artistInfo").innerHTML = data[0].venue.name+" </br> "+data[0].venue.city+", "+data[0].venue.region
+          }
+          else
+          {
+            document.getElementById("artistInfo").innerHTML = "No Data Found!"
+          }
+        }
+        else
+        {
+          return "No Data Found"
+          console.log('Error: ' + xhr.status);
+        }
+      }
+    }
+  };
+
+
+
+    function getArtistInfo(artistName)
+    {
+      info = getArtistInfoFromWeb(artistName)
+      //document.write(info)
+      //document.write(stringgetArtistInfoFromWeb(artistName))
+      //document.getElementById("artistInfo").innerHTML = info
+    }
+
+
+  function populateArtist(venueName)
+  {
+    if (venueName == "House of Blues")
+    {
+      document.getElementById("artist1").innerHTML = "<a onclick=\"getArtistInfo('Rise%20Against')\">Rise Against</a>"
+      document.getElementById("artist2").innerHTML = ""
+      document.getElementById("artist3").innerHTML = ""
+      document.getElementById("artistInfo").innerHTML = ""
+    }
+    else if (venueName == "Verizon")
+    {
+      document.getElementById("artist1").innerHTML = "<a onclick=\"getArtistInfo('Rise%20Against')\">Rise Against</a>"
+      document.getElementById("artist2").innerHTML = "<a onclick=\"getArtistInfo('Foo%20Fighters')\">Foo Fighters</a>"
+      document.getElementById("artist3").innerHTML = ""
+      document.getElementById("artistInfo").innerHTML = ""
+    }
+    else if (venueName == "Rebel Lounge")
+    {
+      document.getElementById("artist1").innerHTML = "<a onclick=\"getArtistInfo('The%20Beatles')\">The Beatles</a>"
+      document.getElementById("artist2").innerHTML = ""
+      document.getElementById("artist3").innerHTML = ""
+      document.getElementById("artistInfo").innerHTML = ""
+    }
+    else
+    {
+      document.getElementById("artist1").innerHTML = ""
+      document.getElementById("artist2").innerHTML = ""
+      document.getElementById("artist3").innerHTML = ""
+    }
+  }
+
+</script>
+</body>
+
+</html>
