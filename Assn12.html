@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Document</title>
+</head>
+<body>
+    <h2>Click an album to view its information.</h2>
+    <div class="albumArea">
+    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e3/Lamb_of_god_sacrament.jpg/220px-Lamb_of_god_sacrament.jpg" id="sacrament" class="image">
+    <img src="https://images-na.ssl-images-amazon.com/images/I/71VvUGNpiUL._SX355_.jpg" id="dive" class="image">
+    <img src="https://upload.wikimedia.org/wikipedia/en/4/42/Knife_Party_-_Abandon_Ship.jpg" id="abandonShip" class="image">
+    </div>
+    <h1 id="artistName"></h1>
+    <h1 id="albumName"></h1>
+    <p id="artistLink"></p>
+    <h1 id="year"></h1>
+    <ol id="tracks">
+    </ol>
+
+    <div>
+      <!--
+      <a href="https://www.amazon.com/Sacrament-Explicit-Lamb-God/dp/B00136JTQ6/ref=sr_1_1?ie=UTF8&qid=1513574190&sr=8-1&keywords=lamb+of+god+sacrament">Buy album here</a>
+      <a href="https://www.amazon.com/Dive-Tycho/dp/B00NYI9Z1K/ref=sr_1_1?ie=UTF8&qid=1513574213&sr=8-1&keywords=tycho+dive">Buy album here</a>
+      <a href="https://www.amazon.com/Abandon-Ship-Explicit-Knife-Party/dp/B00NTHTQTC/ref=sr_1_1?ie=UTF8&qid=1513574229&sr=8-1&keywords=knife+party+abandon+ship">Buy album here</a>
+      -->
+    </div>
+
+    <script>
+        //When you click Sacrament
+        document.getElementById("sacrament").addEventListener('click', function(){
+            getAlbum("Lamb Of God", "Sacrament");
+        })
+        //When you click Dive
+        document.getElementById("dive").addEventListener('click', function(){
+            getAlbum("Tycho", "Dive");
+        })
+        //When you click Abandon Ship
+        document.getElementById("abandonShip").addEventListener('click', function(){
+            getAlbum("Knife Party", "Abandon Ship");
+        })
+        let artistInfo;
+        function getAlbum(artistName, albumName){
+            let url = `http://ws.audioscrobbler.com/2.0/?method=album.getinfo&artist=${artistName}&album=${albumName}&api_key=02b6a7c0ad8e4ef9bbb58fda76f34811&format=json`;
+        fetch(url).then(data=> data.json())
+            .then((data) =>{
+                console.log(data);
+                setDescription(data.album);
+            })
+        }
+        function setDescription(data){
+            document.getElementById("artistName").innerHTML = data.artist
+            document.getElementById("albumName").innerHTML = data.name;
+            if (data.artist == "Tycho")
+            {
+              document.getElementById("artistLink").innerHTML = '<a href="https://www.amazon.com/Dive-Tycho/dp/B00NYI9Z1K/ref=sr_1_1?ie=UTF8&qid=1513574213&sr=8-1&keywords=tycho+dive">Buy album here</a>'
+            }
+            else if (data.artist == "Lamb of God") 
+            {
+              document.getElementById("artistLink").innerHTML = '<a href="https://www.amazon.com/Sacrament-Explicit-Lamb-God/dp/B00136JTQ6/ref=sr_1_1?ie=UTF8&qid=1513574190&sr=8-1&keywords=lamb+of+god+sacrament">Buy album here</a>'
+            }
+            else
+            {
+              document.getElementById("artistLink").innerHTML = '<a href="https://www.amazon.com/Abandon-Ship-Explicit-Knife-Party/dp/B00NTHTQTC/ref=sr_1_1?ie=UTF8&qid=1513574229&sr=8-1&keywords=knife+party+abandon+ship">Buy album here</a>'
+            }
+            removeListItems();
+            //Loop through the tracks
+            data.tracks.track.forEach((track)=>{
+                let listItem = document.createElement("li");
+                listItem.innerHTML = track.name;
+                document.querySelector("#tracks").appendChild(listItem);
+            });
+        }
+        function removeListItems(){
+            var lis = document.querySelectorAll('#tracks li');
+            for(var i=0; li=lis[i]; i++) {
+                 li.parentNode.removeChild(li);
+            }
+        }
+    </script>
+
+    <style>
+        .image {
+            height: 200px;
+            width: 200px;
+            cursor: pointer;
+            transition: 300ms;
+        }
+        .albumArea {
+            width: 700px;
+            display: block;
+            margin: auto;
+        }
+        h2, h1 {
+            text-align: center;
+        }
+        html {
+            min-height: 100%;
+            background-image: white
+        }
+        ol#tracks {
+    text-align: center;
+}
+    </style>
+</body>
+</html>
